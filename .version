@@ -1,0 +1,12 @@
+# Configuración de versión para nota-plugin-for-claude
+TYPE="repo"
+PKG_NAME="nota-plugin-for-claude"
+VERSION_FILE="VERSION"
+TEST_COMMAND=""
+PUBLISH_PLATFORM="GitHub"
+
+# Detección de instalación local: Claude Code cachea los plugins en
+# ~/.claude/plugins/cache/<vendor>/<plugin>/<version>/. La versión está
+# literalmente en el path; basta verificar presencia.
+INSTALL_PATH='$HOME/.claude/plugins/cache/yeste-studio/nota/$version'
+INSTALL_VERSION_CHECK='[[ -d "$INSTALL_PATH" ]]'
