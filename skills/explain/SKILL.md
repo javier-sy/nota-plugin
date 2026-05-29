@@ -35,15 +35,21 @@ You are explaining MusaDSL concepts to a user who is composing algorithmic music
    - Mention relevant demos (demo-00 through demo-22) when applicable
 
 4. **Verify** accuracy:
-   - NEVER invent API methods — only use what's found in the knowledge base
+   - NEVER invent API methods — only use what's found in the knowledge base or confirmed via rubydoc.info
    - If unsure about a method signature, use `api_reference` to confirm
    - Series are LAZY: they use `.next_value`, NOT `.each`
    - Neuma durations are MULTIPLES of base_duration, not fractions
    - `using Musa::Extension::Neumas` is file-scoped (Ruby refinements)
-   - **Source references**: MCP tool results include GitHub URLs pointing to the exact
-     versioned source files. When you need to examine a source file in detail, use
-     `WebFetch` to read it from the GitHub URL — do NOT attempt to read local file paths.
-     The user may not have the MusaDSL source repositories cloned locally.
+   - **Source references**: Each MCP result includes a **Source** URL (GitHub, versioned
+     source) and, for API chunks, a **Docs** URL (rubydoc.info, published documentation).
+     When the retrieved content is not sufficient to answer accurately:
+     1. Re-query the knowledge base first — try `api_reference`, or `search` with a
+        different query or `kind: "docs"` / `kind: "api"`.
+     2. If still insufficient, use `WebFetch` on the **Docs** URL (rubydoc.info) — it
+        has signatures, descriptions, and examples in rendered form.
+     3. Use `WebFetch` on the **Source** URL (GitHub) only to understand an
+        implementation detail that the docs do not cover.
+     — Do NOT read local file paths; the user may not have MusaDSL cloned locally.
 
 ## When MCP tools return setup errors
 

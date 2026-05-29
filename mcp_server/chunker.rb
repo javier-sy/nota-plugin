@@ -495,7 +495,7 @@ module NotaKnowledgeBase
         end
       end
 
-      # 5. Other gem READMEs
+      # 5. Other gem READMEs and docs/
       %w[
         midi-events
         midi-parser
@@ -508,6 +508,14 @@ module NotaKnowledgeBase
           all_chunks.concat(
             chunk_markdown(readme, kind: "gem_readme", source_label: "#{gem_name}/README.md")
           )
+        end
+
+        gem_docs_dir = File.join(source_root, gem_name, "docs")
+        next unless File.directory?(gem_docs_dir)
+
+        Dir.glob(File.join(gem_docs_dir, "**", "*.md")).sort.each do |md_file|
+          rel = relative_path(md_file, source_root)
+          all_chunks.concat(chunk_markdown(md_file, kind: "docs", source_label: rel))
         end
       end
 

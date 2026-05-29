@@ -2,11 +2,44 @@
 TYPE="repo"
 PKG_NAME="nota-plugin-for-claude"
 VERSION_FILE="VERSION"
-TEST_COMMAND=""
 PUBLISH_PLATFORM="GitHub"
 
+# Verifica que el servidor MCP arranca antes de tagear
+TEST_COMMAND="make verify-server"
+
+# Propagar versión a plugin.json y marketplace.json tras cada `version.sh new`.
+# $current_version y $new_version están en scope en el momento de la evaluación.
+POST_VERSION_COMMAND='
+    sed -i "" "s/\"version\": \"$current_version\"/\"version\": \"$new_version\"/" .claude-plugin/plugin.json &&
+    sed -i "" "s/\"version\": \"$current_version\"/\"version\": \"$new_version\"/" .claude-plugin/marketplace.json
+'
+
+# Instalación local: construye knowledge.db y copia el plugin al caché de Claude Code.
+# `make build` requiere VOYAGE_API_KEY. El publish NO ejecuta esto — el CI
+# reconstruye la DB desde los repos pusheados. $version está en scope al evaluar.
+INSTALL_COMMAND='
+    if [[ -z "${VOYAGE_API_KEY}" ]]; then
+        echo "Error: VOYAGE_API_KEY no configurada. Exporta la variable antes de ejecutar local." >&2
+        false
+    else
+        make build &&
+        mkdir -p "$HOME/.claude/plugins/cache/yeste-studio/nota/$version" &&
+        rsync -a --delete \
+            --exclude=".git/" \
+            --exclude="data/chunks/" \
+            --exclude="vendor/" \
+            --exclude=".bundle/" \
+            --exclude=".DS_Store" \
+            . "$HOME/.claude/plugins/cache/yeste-studio/nota/$version/"
+    fi
+'
+
+# Recordatorio post-bump: artefactos generados que pueden necesitar regeneración
+REGENERATION_REMINDER="Si musa-dsl cambió, regenera los archivos estáticos de reglas antes de publicar:
+  - rules/musadsl-reference.md  →  prompts/regenerate-reference.md
+  - rules/musadsl-philosophy.md →  prompts/regenerate-philosophy.md"
+
 # Detección de instalación local: Claude Code cachea los plugins en
-# ~/.claude/plugins/cache/<vendor>/<plugin>/<version>/. La versión está
-# literalmente en el path; basta verificar presencia.
+# ~/.claude/plugins/cache/<vendor>/<plugin>/<version>/
 INSTALL_PATH='$HOME/.claude/plugins/cache/yeste-studio/nota/$version'
 INSTALL_VERSION_CHECK='[[ -d "$INSTALL_PATH" ]]'

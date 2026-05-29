@@ -29,6 +29,8 @@ nota-plugin-for-claude/
 │   ├── db.rb                #   sqlite-vec database management
 │   ├── ensure_db.rb         #   Auto-download knowledge.db on session start
 │   └── knowledge.db         #   Public knowledge base (gitignored, auto-downloaded)
+~/.config/nota-plugin-for-claude/
+│   └── private.db           #   Private composition index (outside repo; path overridable via $PRIVATE_DB_PATH)
 ├── hooks/hooks.json         # SessionStart hook (auto-download)
 ├── .mcp.json                # MCP server configuration
 ├── Gemfile                  # Ruby deps: mcp, sqlite3, sqlite-vec
@@ -89,28 +91,28 @@ When adding, modifying, or removing practices:
 
 ### When releasing a new version
 
-Checklist:
+Use `version.sh` from the ecosystem root (`MusaDSL/version.sh`):
 
-1. **Bump version** in TWO files (must match):
-   - `.claude-plugin/plugin.json` → `"version"`
-   - `.claude-plugin/marketplace.json` → `"version"` in the plugins array
+```bash
+# 1. Bump version (updates VERSION, plugin.json, marketplace.json automatically)
+./version.sh new patch|minor|major nota-plugin-for-claude
 
-2. **Update README.md** if any user-facing counts or features changed
+# 2. Update README.md if any user-facing counts or features changed (manual)
 
-3. **Rebuild knowledge.db** — `make build` (requires `VOYAGE_API_KEY`)
+# 3. Build knowledge.db + install locally for testing (requires VOYAGE_API_KEY)
+export VOYAGE_API_KEY=<your-key>
+./version.sh local nota-plugin-for-claude
 
-4. **Verify MCP server** — `make verify-server`
+# 4. Publish: verify-server + tag + commit + push
+./version.sh publish nota-plugin-for-claude
 
-5. **Review all changes** before committing
+# 5. Trigger knowledge.db CI release if needed (see below)
+```
 
-6. **Commit and push** to main
-
-7. **Tag the version** — `git tag v0.X.Y && git push --tags`
-
-8. **Trigger knowledge.db release** — either:
-   - The CI workflow triggers automatically if `chunker.rb` or `embeddings.rb` changed
-   - Otherwise, manually trigger via GitHub Actions → "Build and Release Knowledge DB" → "Run workflow"
-   - Users auto-download the new knowledge.db on their next session (checked every 24h)
+**Trigger knowledge.db release** — either:
+- The CI workflow triggers automatically if `chunker.rb` or `embeddings.rb` changed
+- Otherwise, manually trigger via GitHub Actions → "Build and Release Knowledge DB" → "Run workflow"
+- Users auto-download the new knowledge.db on their next session (checked every 24h)
 
 ### CI/CD: knowledge.db releases
 
@@ -139,5 +141,5 @@ make clean          # Remove knowledge.db, chunks, and generated artifacts
 - **Rational for all timing values** — `1/4r`, never `0.25` or `1/4` (which is integer 0 in Ruby)
 - **Best practice format** — each `.md` file has: `# Title`, `## Description`, `## Example` (```ruby), `## Anti-pattern` (```ruby). Optional: `## Variant` sections.
 - **Source repos are siblings** — the Makefile assumes all MusaDSL repos are cloned as siblings under `../` (e.g., `../musa-dsl/`, `../musadsl-demo/`)
-- **Two version files** — `plugin.json` and `marketplace.json` must always have the same version number
+- **Three version files** — `VERSION`, `plugin.json`, and `marketplace.json` must always match. `./version.sh new` updates all three automatically via `POST_VERSION_COMMAND` in `.version`.
 - **knowledge.db is gitignored** — never commit it; it's distributed via GitHub Releases

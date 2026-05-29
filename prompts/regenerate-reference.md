@@ -17,8 +17,8 @@ Read ALL of the following before writing. Do not skip any file.
 ```
 MusaDSL/musa-dsl/docs/README.md
 MusaDSL/musa-dsl/docs/api-reference.md
-MusaDSL/musa-dsl/docs/getting-started/quick-start.md
-MusaDSL/musa-dsl/docs/getting-started/tutorial.md
+MusaDSL/musa-dsl/docs/examples/sequencer-dsl-voices.md
+MusaDSL/musa-dsl/docs/examples/neuma-notation.md
 MusaDSL/musa-dsl/docs/subsystems/series.md
 MusaDSL/musa-dsl/docs/subsystems/sequencer.md
 MusaDSL/musa-dsl/docs/subsystems/transport.md
@@ -71,6 +71,7 @@ MusaDSL/midi-communications/README.md
 MusaDSL/midi-events/README.md
 MusaDSL/midi-parser/README.md
 MusaDSL/musalce-server/README.md
+MusaDSL/musalce-server/docs/architecture.md
 ```
 
 ## Output requirements

@@ -98,7 +98,7 @@ When the user describes their intention musically, translate it:
 
 ## Critical Guards
 
-- **NEVER invent API methods** — if you can't find a method in the knowledge base, say so. Use `api_reference` to verify.
+- **NEVER invent API methods** — if unsure, use `api_reference` to verify, then escalate to the **Docs** URL (rubydoc.info) before concluding a method doesn't exist. Only tell the user a method isn't available after both KB and rubydoc confirm its absence.
 - **Ruby block syntax** — MusaDSL methods like `at`, `every`, `wait`, `play` take blocks. The syntax is `at(1) { ... }` or `at 1 do ... end`. **NEVER** write `at 1 { ... }` — this is a Ruby syntax error because curly-brace blocks bind to the last argument, not the method. When using parentheses-free syntax, always use `do...end`. When using curly braces, always use parentheses: `at(1) { ... }`.
 - **Series are lazy iterators** — they use `.next_value` for manual iteration, NOT `.each`. For playback, use `play serie, decoder: decoder, mode: :neumalang`.
 - **Neuma durations are multiples of base_duration** — `1` = one base_duration, `2` = two base_durations. They are NOT fractions like `/4`.
@@ -106,7 +106,7 @@ When the user describes their intention musically, translate it:
 - **Ornaments require a Transcriptor** — without one, ornaments (`tr`, `mor`, `st`, `turn`) are silently ignored.
 - **Use Rational for timing** — `1/4r`, `1r`, `3/4r`. Never use Float for timing values.
 - **Compositions must end** — if the piece is finite, ensure the transport stops after the last event. Never leave a finite piece without a termination mechanism.
-- **Source references**: MCP tool results include GitHub URLs pointing to exact versioned source files. When you need to examine source code in detail, use `WebFetch` to read it from the GitHub URL — do NOT attempt to read local MusaDSL source paths (the user may not have them cloned).
+- **Source references**: Each MCP result includes a **Source** URL (GitHub, versioned source) and, for API chunks, a **Docs** URL (rubydoc.info, published documentation). When the result content is insufficient to verify a method: (1) re-query the knowledge base with `api_reference` or `search` with different terms; (2) if still insufficient, use `WebFetch` on the **Docs** URL (rubydoc.info); (3) only use `WebFetch` on the **Source** URL (GitHub) to understand an implementation detail not covered by the docs. Do NOT read local MusaDSL paths — the user may not have them cloned.
 - **Respect existing project conventions** — if modifying an existing piece, follow its style and patterns.
 
 ## When MCP tools return setup errors

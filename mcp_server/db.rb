@@ -106,6 +106,47 @@ module NotaKnowledgeBase
       "https://github.com/#{owner}/#{repo_name}/blob/#{tag}/#{rest_of_path}"
     end
 
+    # Build a rubydoc.info URL for an API chunk, using the module/name/node_type metadata.
+    # Returns nil for non-API chunks or internal definitions (nested classes).
+    #
+    # Rules:
+    # - module/class chunks: only if module_path ends with name (self-referential, not nested)
+    # - method chunks:           append #name-instance_method
+    # - singleton_method chunks: append #name-class_method
+    def source_to_rubydoc_url(db, chunk)
+      return nil unless chunk["kind"] == "api"
+
+      module_path = chunk["module"].to_s
+      name        = chunk["name"].to_s
+      node_type   = chunk["node_type"].to_s
+      source      = chunk["source"].to_s
+
+      return nil if module_path.empty? || name.empty?
+
+      gem_name = source.split("/").first
+      return nil unless gem_name
+
+      tag = get_metadata(db, "repo:#{gem_name}")
+      return nil unless tag
+
+      version    = tag.sub(/^v/, "")
+      module_url = module_path.gsub("::", "/")
+      base       = "https://www.rubydoc.info/gems/#{gem_name}/#{version}/#{module_url}"
+
+      case node_type
+      when "module", "class"
+        name_parts   = name.split("::")
+        module_parts = module_path.split("::")
+        return nil unless module_parts.last(name_parts.length) == name_parts
+
+        base
+      when "method"
+        "#{base}##{name}-instance_method"
+      when "singleton_method"
+        "#{base}##{name}-class_method"
+      end
+    end
+
     # Upsert chunks with Voyage AI embeddings into both tables.
     def upsert_chunks(db, chunks, embedder: nil, collection_override: nil)
       embedder ||= Voyage.document_embedder
@@ -177,16 +218,18 @@ module NotaKnowledgeBase
         next unless chunk
         next unless kinds_to_search.include?(chunk["kind"])
 
-        source = chunk["source"] || "unknown"
-        source = source_to_github_url(db, source)
+        source      = chunk["source"] || "unknown"
+        source      = source_to_github_url(db, source)
+        rubydoc_url = source_to_rubydoc_url(db, chunk)
 
         all_results << {
-          "content"  => chunk["content"],
-          "source"   => source,
-          "kind"     => chunk["kind"],
-          "section"  => chunk["section"] || "",
-          "module"   => chunk["module"] || "",
-          "distance" => row["distance"]
+          "content"     => chunk["content"],
+          "source"      => source,
+          "rubydoc_url" => rubydoc_url,
+          "kind"        => chunk["kind"],
+          "section"     => chunk["section"] || "",
+          "module"      => chunk["module"] || "",
+          "distance"    => row["distance"]
         }
 
         break if all_results.length >= n_results
@@ -213,6 +256,7 @@ module NotaKnowledgeBase
         source_info = "**Source**: #{result['source']}"
         source_info += " > #{result['section']}" unless result["section"].to_s.empty?
         source_info += " (#{result['module']})" unless result["module"].to_s.empty?
+        source_info += "\n**Docs**: #{result['rubydoc_url']}" if result["rubydoc_url"]
 
         content = result["content"]
         content = content[0, 2000] + "\n... (truncated)" if content.length > 2000
