@@ -22,7 +22,7 @@ Say **"hello musa"** to get a welcome and capabilities overview.
 Inside Claude Code, run:
 
 ```
-/plugin marketplace add javier-sy/nota-plugin-for-claude
+/plugin marketplace add javier-sy/nota-plugin
 ```
 
 ```

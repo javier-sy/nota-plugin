@@ -5,17 +5,18 @@
 # Searches both knowledge.db (public, downloadable) and private.db (local user works).
 # Falls back gracefully when either database is not available.
 
+require_relative "config"
 require_relative "db"
 
 module NotaKnowledgeBase
   module Search
     SETUP_HINT =
       "The plugin is not fully configured. " \
-      "Please run /nota-plugin-for-claude:setup to complete the initial setup."
+      "Please run #{Config.cmd_ref('setup')} to complete the initial setup."
 
     VOYAGE_ERROR_HINT =
       "The Voyage AI API key is not working (it may be expired, revoked, or mistyped). " \
-      "Please run /nota-plugin-for-claude:setup to diagnose the issue."
+      "Please run #{Config.cmd_ref('setup')} to diagnose the issue."
 
     module_function
 

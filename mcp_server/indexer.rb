@@ -15,13 +15,14 @@ require "optparse"
 require "fileutils"
 require "pathname"
 
+require_relative "config"
 require_relative "chunker"
 
 module NotaKnowledgeBase
   module Indexer
     module_function
 
-    USER_FRAMEWORK_DIR = File.join(Dir.home, ".config", "nota-plugin-for-claude")
+    USER_FRAMEWORK_DIR = Config.user_dir
     DEFAULT_FRAMEWORK_PATH = File.join(File.dirname(__dir__), "defaults", "analysis-framework.md")
     USER_FRAMEWORK_PATH = File.join(USER_FRAMEWORK_DIR, "analysis-framework.md")
 
@@ -416,7 +417,7 @@ module NotaKnowledgeBase
       all_names = (indexed_names + disk_files).uniq.sort
 
       if all_names.empty?
-        return "No user best practices found.\n\nUse `/nota-plugin-for-claude:best-practices` to create practices from your analyses or add them manually."
+        return "No user best practices found.\n\nUse `#{Config.cmd_ref('best-practices')}` to create practices from your analyses or add them manually."
       end
 
       lines = ["User best practices:", ""]
@@ -469,7 +470,7 @@ module NotaKnowledgeBase
       if File.exist?(USER_BEST_PRACTICES_INDEX_PATH)
         File.read(USER_BEST_PRACTICES_INDEX_PATH, encoding: "utf-8")
       else
-        "No best practices index generated yet.\n\nUse `/nota-plugin-for-claude:best-practices` to generate one from your practices."
+        "No best practices index generated yet.\n\nUse `#{Config.cmd_ref('best-practices')}` to generate one from your practices."
       end
     end
 
@@ -524,7 +525,7 @@ module NotaKnowledgeBase
           lines << "  (could not read stats: #{e})"
         end
       else
-        lines << "\nPrivate DB: not present (use /nota-plugin-for-claude:index to manage private works)"
+        lines << "\nPrivate DB: not present (use #{Config.cmd_ref('index')} to manage private works)"
       end
 
       lines.join("\n")

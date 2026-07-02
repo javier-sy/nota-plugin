@@ -5,6 +5,7 @@
 
 require "mcp"
 
+require_relative "config"
 require_relative "search"
 
 class SearchTool < MCP::Tool
@@ -189,7 +190,8 @@ class CheckSetupTool < MCP::Tool
       # Check private DB
       private_db_path = NotaKnowledgeBase::DB.default_private_db_path
       has_private_db = File.exist?(private_db_path)
-      status << "- **Private works DB**: #{has_private_db ? 'present' : 'not present — use /nota-plugin-for-claude:index to manage your private works'}"
+      private_label = has_private_db ? 'present' : "not present — use #{NotaKnowledgeBase::Config.cmd_ref('index')} to manage your private works"
+      status << "- **Private works DB**: #{private_label}"
 
       if has_private_db
         begin
@@ -439,7 +441,7 @@ class SaveBestPracticeTool < MCP::Tool
       },
       scope: {
         type: "string",
-        description: 'Where to save: "private" (user, ~/.config/nota-plugin-for-claude/best-practices/) or "global" (plugin, data/best-practices/). Default: "private".',
+        description: "Where to save: \"private\" (user, #{NotaKnowledgeBase::Config.user_dir}/best-practices/) or \"global\" (plugin, data/best-practices/). Default: \"private\".",
         enum: %w[private global],
         default: "private"
       }

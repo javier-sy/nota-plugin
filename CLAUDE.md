@@ -1,4 +1,4 @@
-# CLAUDE.md — nota-plugin-for-claude
+# CLAUDE.md — nota-plugin
 
 ## Project overview
 
@@ -7,7 +7,7 @@ Nota is a Claude Code plugin that transforms Claude into an algorithmic composit
 ## Project structure
 
 ```
-nota-plugin-for-claude/
+nota-plugin/
 ├── .claude-plugin/          # Plugin metadata
 │   ├── plugin.json          #   Version, name, description
 │   └── marketplace.json     #   Marketplace registry entry
@@ -29,7 +29,7 @@ nota-plugin-for-claude/
 │   ├── db.rb                #   sqlite-vec database management
 │   ├── ensure_db.rb         #   Auto-download knowledge.db on session start
 │   └── knowledge.db         #   Public knowledge base (gitignored, auto-downloaded)
-~/.config/nota-plugin-for-claude/
+~/.config/nota/
 │   └── private.db           #   Private composition index (outside repo; path overridable via $PRIVATE_DB_PATH)
 ├── hooks/hooks.json         # SessionStart hook (auto-download)
 ├── .mcp.json                # MCP server configuration
@@ -95,16 +95,16 @@ Use `version.sh` from the ecosystem root (`MusaDSL/version.sh`):
 
 ```bash
 # 1. Bump version (updates VERSION, plugin.json, marketplace.json automatically)
-./version.sh new patch|minor|major nota-plugin-for-claude
+./version.sh new patch|minor|major nota-plugin
 
 # 2. Update README.md if any user-facing counts or features changed (manual)
 
 # 3. Build knowledge.db + install locally for testing (requires VOYAGE_API_KEY)
 export VOYAGE_API_KEY=<your-key>
-./version.sh local nota-plugin-for-claude
+./version.sh local nota-plugin
 
 # 4. Publish: verify-server + tag + commit + push
-./version.sh publish nota-plugin-for-claude
+./version.sh publish nota-plugin
 
 # 5. Trigger knowledge.db CI release if needed (see below)
 ```

@@ -12,6 +12,7 @@
 require "sqlite3"
 require "sqlite_vec"
 
+require_relative "config"
 require_relative "embeddings"
 
 module NotaKnowledgeBase
@@ -30,7 +31,7 @@ module NotaKnowledgeBase
       File.join(__dir__, "knowledge.db")
     end
 
-    STABLE_PRIVATE_DB_DIR = File.join(Dir.home, ".config", "nota-plugin-for-claude")
+    STABLE_PRIVATE_DB_DIR = Config.user_dir
 
     def default_private_db_path
       env_path = ENV["PRIVATE_DB_PATH"]

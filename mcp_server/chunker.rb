@@ -527,9 +527,10 @@ module NotaKnowledgeBase
         )
       end
 
-      # 7. Best practices
-      bp_dir = File.join(source_root, "nota-plugin-for-claude", "data", "best-practices")
-      if File.directory?(bp_dir)
+      # 7. Best practices (plugin's own data dir — works under either clone name)
+      plugin_dir = %w[nota-plugin nota-plugin-for-claude].find { |n| File.directory?(File.join(source_root, n, "data", "best-practices")) }
+      bp_dir = plugin_dir && File.join(source_root, plugin_dir, "data", "best-practices")
+      if bp_dir && File.directory?(bp_dir)
         Dir.glob(File.join(bp_dir, "*.md")).sort.each do |md_file|
           rel = relative_path(md_file, source_root)
           all_chunks.concat(chunk_markdown(md_file, kind: "best_practice", source_label: rel))
