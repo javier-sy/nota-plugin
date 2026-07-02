@@ -1,0 +1,52 @@
+name: Generate and Publish Plugin Distributions
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'targets/**'
+      - 'scripts/**'
+      - 'Gemfile'
+      - 'Gemfile.lock'
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+          bundler-cache: true
+
+      - name: Generate plugin distributions
+        run: bundle exec ruby scripts/generate.rb
+
+      - name: Push dist/claude-code/ to claude-release branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist/claude-code
+          publish_branch: claude-release
+          force_orphan: true
+          full_commit_message: "Generated nota plugin v${{ github.sha }}"
+
+      - name: Setup Node for npm publish
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Publish nota-plugin-for-opencode to npm
+        working-directory: dist/opencode
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

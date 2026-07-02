@@ -1,10 +1,18 @@
 .DS_Store
 .idea/
-mcp_server/knowledge.db
-mcp_server/knowledge.db.version
-mcp_server/knowledge.db.last_check
-mcp_server/private.db
-data/chunks/
+
+# Generated knowledge base (distributed via GitHub Releases)
+src/mcp_server/knowledge.db
+src/mcp_server/knowledge.db.version
+src/mcp_server/knowledge.db.last_check
+src/mcp_server/private.db
+src/data/chunks/
+
+# Generated plugin output (CI-published to claude-release branch + npm)
+dist/
+
+# Build artifacts
 knowledge.db.gz
 vendor/bundle/
 .bundle/
+node_modules/

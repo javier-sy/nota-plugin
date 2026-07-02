@@ -1,0 +1,58 @@
+# Neutral manifest for the Nota plugin — harness-agnostic source of truth.
+# The generator (scripts/generate.rb) reads this + targets/<harness>.yml
+# and emits dist/<harness>/ for each target.
+
+name: nota
+version: "0.11.0"
+description: "Nota — MusaDSL composition assistant: learn the framework, code compositions, explore ideas, analyze music"
+author:
+  name: Javier Sánchez Yeste
+  url: https://yeste.studio
+homepage: https://musadsl.yeste.studio
+repository: https://github.com/javier-sy/nota-plugin
+github_repo: javier-sy/nota-plugin
+license: GPL-3.0-or-later
+keywords: [musadsl, algorithmic-composition, generative-music, ruby, midi, live-coding]
+
+# Skills (source in src/skills/<name>/SKILL.md, superset format with {{cmd:X}})
+skills:
+  - hello
+  - explain
+  - code
+  - think
+  - index
+  - analyze
+  - best-practices
+  - analysis-framework
+  - inspiration-framework
+  - setup
+
+# Always-in-context reference files (paths relative to src/, copied to dist root)
+instructions:
+  - rules/musadsl-reference.md
+  - rules/best-practices.md
+  - rules/musadsl-philosophy.md
+  - rules/think-journal.md
+
+# SessionStart hook script (only emitted by targets that support declarative hooks)
+hooks:
+  session_start: mcp_server/ensure_db.rb
+
+# Shared assets copied verbatim into every dist/<target>/ (paths relative to src/)
+shared_assets:
+  - mcp_server
+  - rules
+  - defaults
+  - data/best-practices
+
+# Root-level files copied verbatim (not in src/)
+root_assets:
+  - Gemfile
+  - Gemfile.lock
+
+# Files to exclude when copying mcp_server/ (generated, not source)
+copy_exclude:
+  - knowledge.db
+  - knowledge.db.version
+  - knowledge.db.last_check
+  - private.db

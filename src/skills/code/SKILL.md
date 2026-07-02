@@ -77,7 +77,7 @@ Help the user program and modify algorithmic compositions using MusaDSL and Ruby
 10. **Provide guidance on testing and common pitfalls**:
     - How to run and test the piece
     - Warn about common runtime issues
-    - Suggest `/nota:index` to index the work and `/nota:analyze` to generate a musical analysis when ready
+    - Suggest `{{cmd:index}}` to index the work and `{{cmd:analyze}}` to generate a musical analysis when ready
 
 ## Musical-to-Technical Translation
 
@@ -111,14 +111,14 @@ When the user describes their intention musically, translate it:
 
 ## When MCP tools return setup errors
 
-If MCP tool results mention "not configured", "API key", or "/nota:setup":
+If MCP tool results mention "not configured", "API key", or "{{cmd:setup}}":
 
 1. **Stop immediately** — do NOT write code without API verification.
 2. **Tell the user** that the plugin needs to be configured first.
-3. **Suggest** they run `/nota:setup` which will guide them through the process.
+3. **Suggest** they run `{{cmd:setup}}` which will guide them through the process.
 
 ## Important
 
 - **Always propose before writing** — never dump a full composition without the user's agreement on the approach.
-- **If the user wants to explore ideas** before coding, suggest `/nota:think` instead — it's designed for creative ideation.
-- After the composition is ready, suggest `/nota:index` to index it and `/nota:analyze` to generate a musical analysis.
+- **If the user wants to explore ideas** before coding, suggest `{{cmd:think}}` instead — it's designed for creative ideation.
+- After the composition is ready, suggest `{{cmd:index}}` to index it and `{{cmd:analyze}}` to generate a musical analysis.

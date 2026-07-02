@@ -1,0 +1,20 @@
+# opencode target — emits an npm package to dist/opencode/
+# Distributed as nota-plugin-for-opencode on npm (CI: npm publish).
+
+# npm package name (isomorphic to nota-plugin-for-claude repo)
+npm_name: nota-plugin-for-opencode
+
+# How {{cmd:X}} resolves in skill bodies (opencode: model-invoked, no slash)
+cmd_format: "the {skill} skill"
+
+# Frontmatter fields to keep (version stripped — opencode doesn't use it)
+frontmatter_keep: [name, description]
+
+# Files to generate
+emit:
+  plugin_json: false
+  mcp_json: false
+  hooks_json: false
+  version_file: false
+  package_json: true
+  index_ts: true

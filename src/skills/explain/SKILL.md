@@ -53,12 +53,12 @@ You are explaining MusaDSL concepts to a user who is composing algorithmic music
 
 ## When MCP tools return setup errors
 
-If MCP tool results mention "not configured", "API key", or "/nota:setup":
+If MCP tool results mention "not configured", "API key", or "{{cmd:setup}}":
 
 1. **Stop immediately** — do NOT try to search for or read local files as a fallback.
    The user may not have the MusaDSL source repositories on their machine.
 2. **Tell the user** that the plugin needs to be configured first.
-3. **Suggest** they run `/nota:setup` which will guide them through the process.
+3. **Suggest** they run `{{cmd:setup}}` which will guide them through the process.
 4. Do NOT attempt to answer the question from general knowledge — wait for the setup to be completed.
 
 ## When MCP tools are not available at all
@@ -74,8 +74,8 @@ are not available in this session (not listed as tools, not just erroring):
 
 ## Beyond Explanation
 
-- If the user wants to **implement** what they've learned — write code, create a piece, add a voice — suggest `/nota:code`.
-- If the user wants to **explore ideas** — brainstorm, get inspired, think about what to compose — suggest `/nota:think`.
+- If the user wants to **implement** what they've learned — write code, create a piece, add a voice — suggest `{{cmd:code}}`.
+- If the user wants to **explore ideas** — brainstorm, get inspired, think about what to compose — suggest `{{cmd:think}}`.
 
 ## Common Pitfalls to Warn About
 

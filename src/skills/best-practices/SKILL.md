@@ -131,5 +131,5 @@ Every practice file follows this structure:
 - User practices are stored as kind `"best_practice"` in `private.db`, searchable via `search` with `kind: "all"` or `"best_practice"`
 - Global practices are in `knowledge.db`, also searchable as `"best_practice"`
 - The condensed index (`~/.config/nota/private-best-practices.md`) is a quick-reference summary, not a replacement for the full practices
-- `/nota:code` automatically searches best practices as part of its research step
-- The `[consolidation candidate]` markers in `/nota:analyze` output signal patterns worth extracting as practices
+- `{{cmd:code}}` automatically searches best practices as part of its research step
+- The `[consolidation candidate]` markers in `{{cmd:analyze}}` output signal patterns worth extracting as practices

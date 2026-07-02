@@ -1,0 +1,30 @@
+# Claude Code target — emits a Claude Code plugin to dist/claude-code/
+# Distributed via the claude-release orphan branch (CI: peaceiris/actions-gh-pages).
+
+# How {{cmd:X}} resolves in skill bodies
+cmd_format: "/nota:{skill}"
+
+# Frontmatter fields to keep (others stripped)
+frontmatter_keep: [name, description, version]
+
+# MCP server env vars (Claude Code ${VAR} syntax)
+mcp_env:
+  VOYAGE_API_KEY: "${VOYAGE_API_KEY}"
+  KNOWLEDGE_DB_PATH: "${CLAUDE_PLUGIN_ROOT}/mcp_server/knowledge.db"
+  PRIVATE_DB_PATH: "${HOME}/.config/nota/private.db"
+  BUNDLE_GEMFILE: "${CLAUDE_PLUGIN_ROOT}/Gemfile"
+  NOTA_CMD_PREFIX: "/nota:"
+  NOTA_USER_DIR: "${HOME}/.config/nota"
+  NOTA_GITHUB_REPO: "javier-sy/nota-plugin"
+
+# Path prefix for MCP server paths (Claude Code variable)
+mcp_path_prefix: "${CLAUDE_PLUGIN_ROOT}/"
+
+# Files to generate
+emit:
+  plugin_json: true
+  mcp_json: true
+  hooks_json: true
+  version_file: true
+  package_json: false
+  index_ts: false

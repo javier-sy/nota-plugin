@@ -7,8 +7,8 @@ on:
   push:
     branches: [main]
     paths:
-      - 'mcp_server/chunker.rb'
-      - 'mcp_server/embeddings.rb'
+      - 'src/mcp_server/chunker.rb'
+      - 'src/mcp_server/embeddings.rb'
 
 jobs:
   build-release:
@@ -44,23 +44,23 @@ jobs:
 
       - name: Generate chunks
         run: |
-          bundle exec ruby mcp_server/indexer.rb \
+          bundle exec ruby src/mcp_server/indexer.rb \
             --source-root sources \
-            --chunks-dir data/chunks \
+            --chunks-dir src/data/chunks \
             --chunks-only
 
       - name: Embed and build knowledge DB
         env:
           VOYAGE_API_KEY: ${{ secrets.VOYAGE_API_KEY }}
         run: |
-          bundle exec ruby mcp_server/indexer.rb \
+          bundle exec ruby src/mcp_server/indexer.rb \
             --source-root sources \
-            --chunks-dir data/chunks \
-            --db-path mcp_server/knowledge.db \
+            --chunks-dir src/data/chunks \
+            --db-path src/mcp_server/knowledge.db \
             --embed
 
       - name: Package knowledge DB
-        run: gzip -c mcp_server/knowledge.db > knowledge.db.gz
+        run: gzip -c src/mcp_server/knowledge.db > knowledge.db.gz
 
       - name: Get current date for tag
         id: date

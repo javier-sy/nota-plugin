@@ -1,0 +1,95 @@
+---
+name: hello
+description: >-
+  Use this skill when the user greets you ("hola musa", "hello", "hi"),
+  asks what the plugin can do, wants a capabilities overview,
+  or is interacting with the plugin for the first time.
+version: 0.1.0
+---
+
+# MusaDSL Plugin Welcome
+
+Present a warm welcome and a comprehensive overview of what the plugin provides. This skill is informational only — it never runs diagnostics or setup checks.
+
+## Process
+
+1. **Detect the user's language** from their message. If they write in Spanish (e.g. "hola musa"), respond entirely in Spanish. If they write in English, respond in English. Match whatever language they use.
+
+2. **Welcome the user** — introduce yourself as an algorithmic composition assistant powered by MusaDSL knowledge. Keep it warm but concise. Include the plugin version in the welcome by reading it from `{plugin_root}/.claude-plugin/plugin.json` (the plugin root is two levels up from this SKILL.md file). Show it like: "Nota v0.x.x".
+
+3. **Explain what the plugin does** — briefly:
+
+   The plugin provides 10 interactive skills covering the entire creative process — from understanding the framework, through brainstorming ideas, to writing verified code, analyzing the results, and consolidating best practices.
+
+   Everything is backed by a knowledge base with MusaDSL documentation, API reference, and 23 demo projects. Optionally, the user can index their own compositions and their musical analyses, which enriches all skills.
+
+4. **Present the 6 core skills** — explain each one briefly, in this order:
+
+   **`{{cmd:explain}}`** — Semantic search. Ask about any MusaDSL concept and get an accurate, sourced answer. Retrieves relevant documentation, API details, and code examples from the knowledge base.
+
+   **`{{cmd:think}}`** — Creative thinking. Generates ideas for new compositions or explores new directions for existing ones, drawing from:
+   - The **inspiration framework** — 9 configurable creative dimensions: Structure, Time, Pitch, Algorithm, Texture, Instrumentation, Reference, Dialogue, and Constraint
+   - The user's **previous analyses** — to detect patterns in their practice and suggest unexplored directions
+   - **MusaDSL knowledge** — to ensure every idea maps to concrete, implementable tools and patterns
+   - **WebSearch** — to connect ideas to composers, techniques, and traditions
+
+   Customize the dimensions with `{{cmd:inspiration-framework}}`.
+
+   **`{{cmd:code}}`** — Composition coding. Translates musical intentions into working MusaDSL Ruby code. Can create new compositions from scratch or modify existing ones, drawing from:
+   - **MusaDSL knowledge** — API reference, documentation, patterns, and demo examples to verify every method call
+   - **Similar works** — from both the public demos and the user's own indexed compositions
+   - The user's **existing code** — reading from the filesystem to understand and extend it
+
+   The user describes their musical intention ("more intense", "like a canon", "more chaotic") and `{{cmd:code}}` translates it into concrete technical approaches.
+
+   **`{{cmd:index}}`** — Works indexing. Indexes the user's composition projects so Claude can reference them. Once indexed, works appear in search results and inform all other skills. Use `{{cmd:index}}` to add, update, remove, and list compositions.
+
+   **`{{cmd:analyze}}`** — Musical analysis. Reads the code, interprets it musically, and produces a detailed structured analysis across 10 configurable dimensions: Formal Structure, Harmonic and Modal Language, Rhythmic and Temporal Strategy, Generative Strategy, Texture and Instrumentation, Idiomatic Usage and Special Features, Relation to Other Artists, Notable Technical Patterns, Coding Best Practices, and Conclusion. The analysis is stored as searchable knowledge that enriches future `{{cmd:think}}` ideation and `{{cmd:code}}` references.
+
+   Customize the dimensions with `{{cmd:analysis-framework}}`.
+
+   **`{{cmd:best-practices}}`** — Best practices management. Manages reusable composition patterns and conventions. Practices can be:
+   - **Generated from analyses** — `{{cmd:analyze}}` marks `[consolidation candidate]` patterns; this skill extracts and formalizes them
+   - **Added manually** — the user describes a practice and the skill structures it with description, example, and optional anti-pattern
+   - **Listed, edited, or removed** — full CRUD over the user's practice library
+
+   Two layers: **global practices** ship with the plugin (proven MusaDSL patterns); **user practices** are private, extracted from the user's own creative practice. Both are searchable, and `{{cmd:code}}` automatically consults them when writing code.
+
+5. **Explain the complete creative cycle:**
+
+   The plugin supports a continuous creative cycle where each step feeds into the next:
+
+   ```
+   {{cmd:think}} ──→ {{cmd:code}} ──→ {{cmd:index}} ──→ {{cmd:analyze}} ──╮
+     ↑                                                            │
+     │              {{cmd:best-practices}} ◄────────────────────────┤
+     │                      │                                     │
+     ╰──────────────────────┴─────────────────────────────────────╯
+   ```
+
+   - **`{{cmd:think}}`** (ideation) — generates ideas drawing from the inspiration framework, MusaDSL knowledge, and the user's previous analyses and works. The more the user has composed and analyzed, the richer the ideation becomes.
+   - **`{{cmd:code}}`** (composition) — implements ideas as working MusaDSL code, verified against the knowledge base, informed by similar works, and guided by best practices.
+   - **`{{cmd:index}}`** (knowledge building) — stores the composition's code, making it searchable and available for future reference by all other skills.
+   - **`{{cmd:analyze}}`** (reflection) — reads the code, interprets it musically, and stores the analysis as searchable knowledge. Marks `[consolidation candidate]` patterns worth extracting as best practices.
+   - **`{{cmd:best-practices}}`** (consolidation) — extracts recurring patterns from analyses into formalized, reusable practices. These feed back into `{{cmd:code}}` (which consults them automatically) and `{{cmd:think}}` (which draws from the accumulated creative practice).
+   - Back to **`{{cmd:think}}`** — the new analysis and practices enrich future ideation: patterns detected across works, unexplored directions, dialogue with composers.
+
+   The two databases are the memory of this cycle:
+   - **`knowledge.db`** holds MusaDSL knowledge (what is possible)
+   - **`private.db`** holds the user's creative practice (what has been done, and what it means)
+
+   The cycle is not mandatory — the user can enter at any point and use any skill independently. But each step enriches the others.
+
+6. **Mention the other skills:**
+
+   | Skill | Purpose |
+   |-------|---------|
+   | `{{cmd:hello}}` | This welcome and capabilities overview |
+   | `{{cmd:setup}}` | Plugin configuration and troubleshooting |
+   | `{{cmd:analysis-framework}}` | View, customize, or reset the analysis dimensions |
+   | `{{cmd:inspiration-framework}}` | View, customize, or reset the creative dimensions |
+
+## Important
+
+- **Do NOT call `check_setup`** or any other MCP tool. This skill is purely informational — it presents the overview from the instructions above.
+- If the user mentions configuration problems, API key issues, or the knowledge base not being found, redirect them to `{{cmd:setup}}` instead.
