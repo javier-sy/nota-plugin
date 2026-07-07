@@ -11,6 +11,10 @@ on:
       - 'Gemfile.lock'
   workflow_dispatch:
 
+concurrency:
+  group: generate-dist
+  cancel-in-progress: true
+
 jobs:
   generate:
     runs-on: ubuntu-latest
@@ -26,6 +30,19 @@ jobs:
         with:
           ruby-version: '3.2'
           bundler-cache: true
+
+      - name: Verify version was bumped (prevent silent Claude Code/opencode divergence)
+        run: |
+          VERSION=$(ruby -ryaml -e 'puts YAML.load_file("src/manifest.yml")["version"]')
+          echo "src/manifest.yml version: ${VERSION}"
+          echo "Checking if nota-plugin-for-opencode@${VERSION} already exists on npm..."
+          HTTP=$(curl -s -o /dev/null -w "%{http_code}" "https://registry.npmjs.org/nota-plugin-for-opencode/${VERSION}")
+          if [ "${HTTP}" = "200" ]; then
+            echo "::error::nota-plugin-for-opencode@${VERSION} is already on npm. Without a bump, Claude Code would update (rolling claude-release) but opencode would not (npm rejects republish) — silent divergence. Bump and push again:"
+            echo "::error::  cd MusaDSL && ./version.sh nota-plugin <new-version> && make generate && git add -A && git commit -m \"Release <new-version>\" && git push"
+            exit 1
+          fi
+          echo "OK: ${VERSION} not yet on npm — both channels will update together."
 
       - name: Generate plugin distributions
         run: bundle exec ruby scripts/generate.rb
@@ -45,20 +62,7 @@ jobs:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Check if version already on npm
-        id: npm_ver
-        working-directory: dist/opencode
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          if npm view nota-plugin-for-opencode@${VERSION} >/dev/null 2>&1; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"
-            echo "Version ${VERSION} already published, skipping"
-          else
-            echo "skip=false" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Publish nota-plugin-for-opencode to npm
-        if: steps.npm_ver.outputs.skip != 'true'
         working-directory: dist/opencode
         run: npm publish --access public
         env:
