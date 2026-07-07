@@ -2,7 +2,7 @@
 
 ## Project overview
 
-Nota is a **harness-agnostic** algorithmic composition assistant for the [MusaDSL](https://musadsl.yeste.studio) framework. The source lives in `src/` and a generator (`scripts/generate.rb`) emits per-harness plugin output (`dist/claude-code/`, `dist/opencode/`) from a neutral `src/manifest.yml` + per-target templates in `targets/`.
+Nota is a **harness-agnostic** algorithmic composition assistant for the [MusaDSL](https://musadsl.yeste.studio) framework. Repo: [`javier-sy/nota-plugin`](https://github.com/javier-sy/nota-plugin) (renamed from `nota-plugin-for-claude`; the old URL redirects, so existing references keep working). The source lives in `src/` and a generator (`scripts/generate.rb`) emits per-harness plugin output (`dist/claude-code/`, `dist/opencode/`) from a neutral `src/manifest.yml` + per-target templates in `targets/`. Claude Code consumes the `claude-release` orphan branch; opencode consumes the npm package `nota-plugin-for-opencode`.
 
 It provides 10 interactive skills, a semantic search MCP server backed by sqlite-vec, and two knowledge databases (public `knowledge.db` + private `private.db`).
 
@@ -143,11 +143,13 @@ export VOYAGE_API_KEY=<your-key>
 
 ### CI/CD
 
-Two workflows:
+Two workflows (both have `concurrency: cancel-in-progress` to coalesce redundant concurrent runs):
 
-1. **`build-release.yml`** — builds and releases `knowledge.db.gz` as a GitHub Release. Triggered by `repository_dispatch` from source repos, manual dispatch, or push to main modifying `src/mcp_server/chunker.rb` or `src/mcp_server/embeddings.rb`.
+1. **`build-release.yml`** — builds and releases `knowledge.db.gz` as a GitHub Release. Triggered by `repository_dispatch` (`source-updated`) from the 7 source repos' `notify-plugin.yml`, manual dispatch, or push to main modifying `src/mcp_server/chunker.rb` or `src/mcp_server/embeddings.rb`. The concurrency guard prevents `db-<timestamp>` tag collisions when several sources push near-simultaneously.
 
-2. **`generate-dist.yml`** — runs `make generate`, pushes `dist/claude-code/` to the `claude-release` orphan branch (via `peaceiris/actions-gh-pages`), and publishes `dist/opencode/` as `nota-plugin-for-opencode` on npm. Triggered by push to main modifying `src/`, `src/manifest.yml`, `targets/`, etc.
+2. **`generate-dist.yml`** — runs `make generate`, pushes `dist/claude-code/` to the `claude-release` orphan branch (via `peaceiris/actions-gh-pages`), and publishes `dist/opencode/` as `nota-plugin-for-opencode` on npm. Triggered by push to main modifying `src/**`, `targets/**`, `scripts/**`, `Gemfile`, or `Gemfile.lock`.
+
+   **⚠️ Fail-fast version check** — after Ruby setup, before generate/claude-release/npm-publish, the workflow reads the version from `src/manifest.yml` and queries `curl https://registry.npmjs.org/nota-plugin-for-opencode/<version>`. If that version **already exists on npm, the workflow FAILS** — neither `claude-release` nor npm is touched. This prevents silent divergence between Claude Code (rolling `claude-release`, updates every CI) and opencode (immutable npm, needs a bump). **Consequence: every push to main touching `src/targets/scripts/Gemfile` requires a version bump** (`cd ../.. && ./version.sh nota-plugin <new-version>`), otherwise CI goes red with an `::error::` pointing at the bump command. The `npm publish` step is unconditional — the fail-fast check already guaranteed the version is new.
 
 ## Build commands
 
@@ -171,3 +173,4 @@ make clean          # Remove knowledge.db, chunks, dist/, and generated artifact
 - **knowledge.db is gitignored** — never commit it; it's distributed via GitHub Releases
 - **dist/ is gitignored** — never commit it; CI generates and publishes it
 - **Skills use `{{cmd:X}}` placeholders** — never hardcode `/nota:X` in skill source; the generator resolves per target
+- **Every push to main touching `src/targets/scripts/Gemfile` requires a version bump** — `generate-dist.yml` fails fast if the `src/manifest.yml` version already exists on npm (prevents Claude Code/opencode divergence). Run `./version.sh nota-plugin <new-version>` from `MusaDSL/` before pushing.
