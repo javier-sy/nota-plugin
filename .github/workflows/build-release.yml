@@ -10,6 +10,10 @@ on:
       - 'src/mcp_server/chunker.rb'
       - 'src/mcp_server/embeddings.rb'
 
+concurrency:
+  group: build-release-knowledge-db
+  cancel-in-progress: true
+
 jobs:
   build-release:
     runs-on: ubuntu-latest
