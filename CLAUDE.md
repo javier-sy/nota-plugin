@@ -141,6 +141,10 @@ export VOYAGE_API_KEY=<your-key>
 - Otherwise, manually trigger via GitHub Actions → "Build and Release Knowledge DB" → "Run workflow"
 - Users auto-download the new knowledge.db on their next session (checked every 24h)
 
+**Manual npm publish (rare — e.g. reserving a new package name)** — only if you ever publish to npm by hand instead of via CI:
+- Use `npm publish --access public ./dist/opencode` (with the `./` prefix). A bare `dist/opencode` is parsed by pacote as a GitHub shorthand `github:dist/opencode` → spurious `git ls-remote` → 403.
+- The npm account has 2FA on. A **Classic Automation** token (bypasses 2FA, no per-package scoping) is stored as the `NPM_TOKEN` secret. A granular token fails with `403` on a not-yet-existing package (chicken-and-egg).
+
 ### CI/CD
 
 Two workflows (both have `concurrency: cancel-in-progress` to coalesce redundant concurrent runs):
@@ -174,3 +178,10 @@ make clean          # Remove knowledge.db, chunks, dist/, and generated artifact
 - **dist/ is gitignored** — never commit it; CI generates and publishes it
 - **Skills use `{{cmd:X}}` placeholders** — never hardcode `/nota:X` in skill source; the generator resolves per target
 - **Every push to main touching `src/targets/scripts/Gemfile` requires a version bump** — `generate-dist.yml` fails fast if the `src/manifest.yml` version already exists on npm (prevents Claude Code/opencode divergence). Run `./version.sh nota-plugin <new-version>` from `MusaDSL/` before pushing.
+- **User private data at `~/.config/nota/`** (`private.db`, `best-practices/`, `private-best-practices.md`) — never read or modify without an explicit user request.
+
+## References
+
+- opencode config schema: https://opencode.ai/config.json
+- Claude Code plugins reference: https://docs.claude.com/en/docs/claude-code/plugins-reference
+- Claude Code plugin marketplaces: https://docs.claude.com/en/docs/claude-code/plugin-marketplaces
