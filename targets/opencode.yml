@@ -1,7 +1,7 @@
 # opencode target — emits an npm package to dist/opencode/
 # Distributed as nota-plugin-for-opencode on npm (CI: npm publish).
 
-# npm package name (isomorphic to nota-plugin-for-claude repo)
+# npm package name (opencode distribution; repo is the neutral javier-sy/nota-plugin)
 npm_name: nota-plugin-for-opencode
 
 # How {{cmd:X}} resolves in skill bodies (opencode: model-invoked, no slash)
