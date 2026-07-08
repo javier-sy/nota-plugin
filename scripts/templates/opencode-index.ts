@@ -50,6 +50,12 @@ export default (async () => {
       cfg.skills = cfg.skills ?? { paths: [] }
       cfg.skills.paths = cfg.skills.paths ?? []
       cfg.skills.paths.push(`${HERE}/skills`)
+
+      // 4. Slash commands — thin wrappers that delegate to the skills above.
+      //    Both /nota:<name> (canonical, matches Claude Code) and /<name>
+      //    (short synonym) are registered, so Claude Code users feel at home.
+      cfg.command = cfg.command ?? {}
+{{COMMANDS}}
     },
   }
 }) satisfies Plugin

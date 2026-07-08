@@ -81,6 +81,16 @@ def transform_skill(skill_name, target_config)
   end
 end
 
+def parse_skill_frontmatter(skill_name)
+  path = File.join(SRC, "skills", skill_name, "SKILL.md")
+  content = File.read(path, encoding: "utf-8")
+  return {} unless content =~ /\A---\n(.*?)\n---\n/m
+  YAML.safe_load(Regexp.last_match(1), aliases: true) || {}
+rescue => e
+  warn "  Warning: could not parse frontmatter for #{skill_name}: #{e.message}"
+  {}
+end
+
 # --- Target-specific file generators ---
 
 def generate_claude_code(manifest, target_config, target_dir)
@@ -171,8 +181,22 @@ def generate_opencode(manifest, target_config, target_dir)
   if emit["index_ts"]
     template = File.read(File.join(TEMPLATES, "opencode-index.ts"), encoding: "utf-8")
     content = template.gsub("{{GITHUB_REPO}}", manifest["github_repo"])
+    # Slash commands: /nota:<name> (canonical) + /<name> (short synonym) per skill.
+    # Thin wrappers that tell the model to invoke the corresponding skill.
+    commands_block = manifest["skills"].flat_map do |skill_name|
+      fm = parse_skill_frontmatter(skill_name)
+      name = fm["name"] || skill_name
+      desc = (fm["description"] || manifest["description"]).to_s.strip
+      desc = desc.length > 120 ? desc[0, 119] + "…" : desc
+      tmpl_ts = JSON.generate("Use the \"#{name}\" skill to respond to:\n\n$ARGUMENTS")
+      [
+        %(      cfg.command["nota:#{name}"] = { template: #{tmpl_ts}, description: #{JSON.generate(desc)} }),
+        %(      cfg.command["#{name}"] = { template: #{tmpl_ts}, description: #{JSON.generate("#{desc} (nota)")} }),
+      ]
+    end.join("\n")
+    content = content.gsub("{{COMMANDS}}", commands_block)
     File.write(File.join(target_dir, "index.ts"), content)
-    puts "    ✓ index.ts"
+    puts "    ✓ index.ts (with #{manifest['skills'].size * 2} slash commands)"
   end
 end
 
