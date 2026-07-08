@@ -114,7 +114,7 @@ Skills live in `src/skills/<name>/SKILL.md` in **superset format** with `{{cmd:X
 - `claude-code` → `/nota:X`
 - `opencode` → `the X skill`
 
-Frontmatter: `name`, `description`, `version` (all preserved in source; `version` is stripped for opencode by the generator). After editing skills, run `make generate` to regenerate `dist/`.
+Frontmatter: `name`, `description`, `version` (all preserved in source; `version` is stripped for opencode by the generator). The opencode generator also emits two `cfg.command` slash entries per skill — `/nota:<name>` (canonical, matches Claude Code) and `/<name>` (short synonym) — as thin wrappers whose template tells the model to invoke the skill. Adding/removing/renaming a skill regenerates these command entries on the next `make generate`. After editing skills, run `make generate` to regenerate `dist/`.
 
 ### When releasing a new version
 
