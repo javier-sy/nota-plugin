@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "knowledge-base": {
+      "command": "ruby",
+      "args": [
+        "-r",
+        "bundler/setup",
+        "${CLAUDE_PLUGIN_ROOT}/mcp_server/server.rb"
+      ],
+      "env": {
+        "VOYAGE_API_KEY": "${VOYAGE_API_KEY}",
+        "KNOWLEDGE_DB_PATH": "${CLAUDE_PLUGIN_ROOT}/mcp_server/knowledge.db",
+        "PRIVATE_DB_PATH": "${HOME}/.config/nota/private.db",
+        "BUNDLE_GEMFILE": "${CLAUDE_PLUGIN_ROOT}/Gemfile",
+        "NOTA_CMD_PREFIX": "/nota:",
+        "NOTA_USER_DIR": "${HOME}/.config/nota",
+        "NOTA_GITHUB_REPO": "javier-sy/nota-plugin"
+      },
+      "cwd": "${CLAUDE_PLUGIN_ROOT}"
+    }
+  }
+}
