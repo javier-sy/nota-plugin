@@ -59,10 +59,15 @@ module NotaKnowledgeBase
   # to would be inventing its behaviour. Listed in CLAUDE.md among the things to
   # revisit if that channel comes back.
   #
+  # Two commands and what they achieve. Not "start a new session", which names
+  # the outcome and leaves the reader to guess the commands; and not "reloading
+  # plugins will not do it", which was here and spent the sentence on what does
+  # not work. What the reader needs is why they are being asked to leave.
+  #
   # `claude --continue` is named because it is what makes this acceptable
   # advice: "restart" reads as "lose your conversation", and it does not.
-  RESTART = "start a new Claude Code session — reloading plugins does not start the knowledge " \
-            "base server. `claude --continue` comes back to this conversation."
+  RESTART = "leave with `/exit` and come back with `claude --continue` — that returns to this " \
+            "conversation and starts the knowledge base server, so its tools become available."
 
   # What the installation looks like right now, read from disk.
   #
@@ -217,7 +222,7 @@ module NotaKnowledgeBase
                "Everything else is in place."
       end
 
-      "Everything is in place. If its tools are still not there, #{RESTART}"
+      "Everything is in place. If the knowledge base has not started yet, #{RESTART}"
     end
 
     # "a", "a and b", "a, b and c".
