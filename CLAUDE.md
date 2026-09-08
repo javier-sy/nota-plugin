@@ -96,14 +96,18 @@ a count of what is declared, not of what was relaunched — that message is what
 made two of us believe otherwise.
 
 The same fact from the other side: **uninstalling the plugin does not stop its
-servers either**. Observed 2026-09-08, three ruby processes still serving a
-plugin that no longer existed, started by the session that was open and outliving
-both the uninstall and the marketplace removal. It matters for one job in
-particular — a clean reinstall — because `boot_knowledge.rb` holds `knowledge.db`
-open, and Windows will not delete an open file. So wiping `~/.config/nota` fails
-on that one file, and fails **quietly** if nobody reads the result. Close the
-session before the `rm`, or kill the processes **by PID**: `taskkill /IM
-ruby.exe` once took out the tester's own MCP server mid-session.
+servers either**. Observed three times on 2026-09-08, ruby processes still
+serving a plugin that no longer existed, outliving both the uninstall and the
+marketplace removal. Only closing the session ends them.
+
+What stood here next said they hold `knowledge.db` open, so a clean wipe of
+`~/.config/nota` fails until they are killed. **That was wrong**, and it is worth
+knowing how: every wipe that had succeeded had been preceded by killing them, and
+necessity was read into the order. Measured afterwards with all three alive —
+every file deleted without error, `vec0.dll` included. `DB.open` builds a handle
+per search and closes it in an `ensure`, so between queries nothing is held; a
+delete *during* a search was not tried. If you do kill them, kill **by PID**:
+`taskkill /IM ruby.exe` once took out the tester's own MCP server mid-session.
 
 Two consequences. **For the reader**: the session that installs the dependencies
 is never the session that can use them, so every message that used to say
