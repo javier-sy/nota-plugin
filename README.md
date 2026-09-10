@@ -141,7 +141,7 @@ nota/
 └── .github/workflows/       # CI: build + release public knowledge DB
 ```
 
-## Licence
+## License
 
 Proprietary — see [LICENSE](LICENSE). Nota is free of charge and is not open source:
 it is licensed to be used, not copied, changed or redistributed. What you compose with

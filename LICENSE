@@ -1,17 +1,18 @@
-Nota End User Licence Agreement
+Nota End User License Agreement
 Version 1.0 — 10 September 2026
 
 Copyright © 2026 Javier Sánchez Yeste, https://yeste.studio
 All rights reserved.
 
-Nota is proprietary software. It is offered free of charge, but it is not open
-source: it is licensed to be used, not to be copied, changed or redistributed.
+Nota is offered free of charge, for any use including professional and
+commercial work. It is not open source: it is licensed to be used, not to be
+copied, changed or redistributed.
 
 
-1. LICENCE GRANTED
+1. LICENSE GRANTED
 
 The licensor grants you a personal, non-exclusive, non-transferable, revocable
-and royalty-free licence to install and use Nota — the plugin and its MCP
+and royalty-free license to install and use Nota — the plugin and its MCP
 servers — on machines you control, for any purpose, including commercial and
 professional work.
 
@@ -23,14 +24,14 @@ You may not:
   (a) copy, publish or redistribute Nota, in whole or in part, modified or not;
   (b) modify Nota or create works based on it;
   (c) sublicense, sell, rent, lease or transfer it;
-  (d) remove or alter this licence, the copyright notices, or anything that
+  (d) remove or alter this license, the copyright notices, or anything that
       identifies the software;
   (e) decompile, disassemble or otherwise attempt to derive the source form of
       any part of Nota that is not distributed in source form, or use any part
       of Nota to build a competing product.
 
 Section 2(e) does not apply where the law does not allow such a restriction.
-In particular, nothing in this licence limits the rights granted by Articles
+In particular, nothing in this license limits the rights granted by Articles
 5(3) and 6 of Directive 2009/24/EC and the national law implementing it,
 including the right to observe, study and test how the program works, and to
 decompile it where that is necessary to achieve interoperability with an
@@ -44,18 +45,18 @@ scores, recordings, analyses, or any other material. This holds whether you
 wrote it, Nota suggested it, or the assistant generated it while Nota was
 installed.
 
-Your works are yours. This licence places no condition whatsoever on how you
+Your works are yours. This license places no condition whatsoever on how you
 license, publish, perform, distribute or sell them, and asks nothing in return.
 
 
 4. THE KNOWLEDGE BASE
 
 The knowledge base that Nota downloads is a separate work, distributed from
-https://github.com/javier-sy/nota under its own terms. This licence does not
+https://github.com/javier-sy/nota under its own terms. This license does not
 govern it.
 
 Anything you index yourself stays on your machine and is not covered by this
-licence at all.
+license at all.
 
 
 5. THIRD-PARTY COMPONENTS
@@ -67,9 +68,9 @@ each under its own terms.
 
 6. FREE OF CHARGE, AND NO PROMISE ABOUT THAT
 
-Nota is currently offered at no cost. This licence covers the version you
+Nota is currently offered at no cost. This license covers the version you
 received. The licensor may release future versions under different terms,
-including paid ones; that does not change your licence for the version you
+including paid ones; that does not change your license for the version you
 already have.
 
 
@@ -77,24 +78,24 @@ already have.
 
 Nota is provided "as is", without warranty or condition of any kind, express or
 implied. As far as the law allows, the licensor is not liable for any damages
-arising from this licence or from the use of the software. Nothing here
+arising from this license or from the use of the software. Nothing here
 excludes liability that cannot lawfully be excluded.
 
 
 8. TERMINATION
 
-This licence ends automatically if you breach it, and you may end it at any
+This license ends automatically if you breach it, and you may end it at any
 time by uninstalling Nota. Section 3 survives: what you have already made
 stays yours.
 
 
 9. LAW
 
-Spanish law governs this licence, without prejudice to any mandatory consumer
+Spanish law governs this license, without prejudice to any mandatory consumer
 protection of the country where you live.
 
 
 ---
 
 These terms cover the Nota plugin only. MusaDSL, the framework Nota assists
-with, is free software under its own licence and is unaffected by them.
+with, is free software under its own license and is unaffected by them.
