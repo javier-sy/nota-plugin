@@ -597,7 +597,7 @@ end
 RSpec.describe "skills that need the knowledge base" do
   GATED = %w[analysis-framework analyze best-practices code explain index
              inspiration-framework think].freeze
-  UNGATED = %w[setup hello].freeze
+  UNGATED = %w[setup hello license].freeze
 
   it "all carry the refusal, and it is written once" do
     GATED.each do |skill|
@@ -606,7 +606,9 @@ RSpec.describe "skills that need the knowledge base" do
     end
   end
 
-  # These two only use check_setup, which is on the server that always starts.
+  # These three need no knowledge base at all: two diagnose it and one reads a
+# file that ships with the plugin. Gating them would leave a broken install
+# with nothing that works, and would hide the terms behind the failure.
   # Gating them would leave a broken installation with nothing that works.
   it "does not include the ones that diagnose it" do
     UNGATED.each do |skill|

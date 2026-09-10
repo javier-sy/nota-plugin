@@ -33,7 +33,7 @@ nota-plugin/                      # source repo (harness-agnostic)
 │   ├── defaults/                 #   Default frameworks (analysis, inspiration)
 │   ├── data/
 │   │   └── best-practices/       #     The user's own practices (4 .md)
-│   └── skills/<name>/SKILL.md    #   10 skills in superset format with {{cmd:X}} placeholders
+│   └── skills/<name>/SKILL.md    #   11 skills in superset format with {{cmd:X}} placeholders
 ├── targets/                      # Per-harness generation templates
 │   ├── claude-code.yml           #   → dist/claude-code/ (plugin.json, .mcp.json, hooks)
 │   └── opencode.yml              #   → dist/opencode/ (package.json, index.ts, opencode.json)

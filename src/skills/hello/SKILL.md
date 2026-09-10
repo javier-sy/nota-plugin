@@ -19,7 +19,7 @@ Present a warm welcome and a comprehensive overview of what the plugin provides.
 
 3. **Explain what the plugin does** — briefly:
 
-   The plugin provides 10 interactive skills covering the entire creative process — from understanding the framework, through brainstorming ideas, to writing verified code, analyzing the results, and consolidating best practices.
+   The plugin provides 11 interactive skills covering the entire creative process — from understanding the framework, through brainstorming ideas, to writing verified code, analyzing the results, and consolidating best practices.
 
    Everything is backed by a knowledge base with MusaDSL documentation, API reference, and 23 demo projects. Optionally, the user can index their own compositions and their musical analyses, which enriches all skills.
 
