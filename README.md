@@ -1,173 +1,24 @@
-# Nota — plugin for Claude Code
+# Nota — source
 
-MusaDSL composition assistant: learn the framework, code compositions, explore ideas, analyze music.
+Source of the Nota plugin: a MusaDSL composition assistant for AI coding assistants.
+This repository builds it, tests it and publishes it. It is not where you install it from,
+and it is not where it is documented.
 
-## What it does
+- **What Nota is, how to install it and what it needs** — [nota.yeste.studio](https://nota.yeste.studio):
+  [what it does](https://nota.yeste.studio/#about) ·
+  [the skills](https://nota.yeste.studio/#skills) ·
+  [requisites](https://nota.yeste.studio/#prerequisites) ·
+  [install](https://nota.yeste.studio/#install) ·
+  [troubleshooting](https://nota.yeste.studio/#troubleshooting)
+- **Knowledge base releases and issue tracker** — [`javier-sy/nota`](https://github.com/javier-sy/nota)
+- **Claude Code distribution** — [`javier-sy/claude-plugins`](https://github.com/javier-sy/claude-plugins),
+  written by CI from `dist/claude-code/`
 
-Nota transforms Claude Code into an algorithmic composition assistant with deep knowledge of the [MusaDSL](https://musadsl.yeste.studio) framework. It provides 10 interactive skills that cover the entire creative process — from understanding the framework, through brainstorming ideas, to writing verified code, analyzing the results, and consolidating best practices.
+None of that is repeated below. What follows is what only this repository can say.
 
-Everything is backed by a knowledge base with MusaDSL documentation, API reference, 23 demo projects, and (optionally) your own compositions and their musical analyses.
+## Development
 
-Say **"hello musa"** to get a welcome and capabilities overview.
-
-## Getting Started
-
-### Prerequisites
-
-- Ruby 3.1+
-- A [Voyage AI](https://dash.voyageai.com/) API key
-
-**Proven on macOS only.** Linux and Windows should work — Windows from 1.0.2 on —
-but neither is confirmed. If it breaks on yours,
-[open an issue](https://github.com/javier-sy/nota/issues).
-
-**On Windows, Ruby must be built for x64.** Neither `sqlite3` nor `sqlite-vec`
-publishes anything for Windows on ARM, so a Ruby reporting `aarch64-mingw-ucrt`
-cannot run the knowledge base — the session says so and stops. Windows runs an
-x64 Ruby under emulation; rather than putting it first on PATH, point Nota at it:
-
-```powershell
-[Environment]::SetEnvironmentVariable('NOTA_RUBY', 'C:\Ruby34-x64\bin\ruby.exe', 'User')
-```
-
-Installing the plugin downloads nothing and installs nothing. Everything the
-knowledge base needs — the Ruby gems, the `sqlite-vec` SQLite extension, and the
-index itself — is installed by **`/nota:setup`**, which you run once afterwards,
-and it takes a new session to pick it up.
-
-It is done that way because on a new machine that install takes longer than the
-thirty seconds Claude Code allows a server to start in. Run from a command it
-has as long as it needs, and it can tell you what it is doing. The gems go to
-`~/.config/nota/bundle`: your own Ruby is not touched, and they survive plugin
-updates.
-
-Until you run it, `/nota:setup` and `/nota:hello` work and the rest say what is
-missing rather than answering without the knowledge base.
-
-### Install
-
-Inside Claude Code, run:
-
-```
-/plugin marketplace add javier-sy/claude-plugins
-```
-
-```
-/plugin install nota@yeste.studio
-```
-
-Add the API key to your shell profile:
-
-```bash
-export VOYAGE_API_KEY="your-key-here"
-```
-
-Then, in a session that has the key:
-
-```
-/nota:setup
-```
-
-It reports what is still missing and installs it — the gems, the sqlite-vec
-extension and the index. Then `/exit` and `claude --continue`, which comes back
-to the same conversation, and everything is ready. Reloading plugins does not
-start the server.
-
-(That is Claude Code's wording. The opencode channel is on hold and its
-equivalent is unknown.)
-
-## Skills
-
-### `/nota:explain` — Semantic search
-
-Ask about any MusaDSL concept and get an accurate, sourced answer. Retrieves relevant documentation, API details, and code examples from the knowledge base.
-
-### `/nota:think` — Creative thinking
-
-Generates ideas for new compositions or explores new directions for existing ones. It draws from multiple sources:
-
-- The **inspiration framework** — a configurable set of creative dimensions
-- Your **previous analyses** — to detect patterns in your practice and suggest unexplored directions
-- **MusaDSL knowledge** — to ensure every idea maps to concrete, implementable tools and patterns
-- **WebSearch** — to connect ideas to composers, techniques, and traditions with accurate references
-
-The default **inspiration framework** has 9 dimensions: Structure, Time, Pitch, Algorithm, Texture, Instrumentation, Reference, Dialogue, and Constraint. Customize them with `/nota:inspiration-framework`.
-
-### `/nota:code` — Composition coding
-
-Translates musical intentions into working MusaDSL Ruby code. It can create new compositions from scratch or modify existing ones, drawing from:
-
-- **MusaDSL knowledge** — API reference, documentation, patterns, and demo examples to verify every method call
-- **Similar works** — from both the public demos and your own indexed compositions
-- Your **existing code** — reading from the filesystem to understand and extend it
-
-You describe your musical intention ("more intense", "like a canon", "more chaotic") and `/nota:code` translates it into concrete technical approaches, always proposing the approach before writing.
-
-### `/nota:index` — Works indexing
-
-Indexes your composition projects so Claude can reference them. All `.rb` and `.md` files are indexed recursively. Once indexed, your works appear in search results and inform all other skills.
-
-Use `/nota:index` to add, update, remove, and list indexed compositions.
-
-### `/nota:analyze` — Musical analysis
-
-Reads your code, interprets it musically, and produces a detailed structured analysis. The analysis is stored as searchable knowledge, enriching future searches, `/nota:think` ideation, and `/nota:code` references. This transforms search from "what does the code say" to "what does the code do musically."
-
-The default **analysis framework** has 10 dimensions: Formal Structure, Harmonic and Modal Language, Rhythmic and Temporal Strategy, Generative Strategy, Texture and Instrumentation, Idiomatic Usage and Special Features, Relation to Other Artists, Notable Technical Patterns, Coding Best Practices, and Conclusion. Customize them with `/nota:analysis-framework`.
-
-Removing a work with `/nota:index` also removes its associated analysis.
-
-### `/nota:best-practices` — Best practices management
-
-Manages best practices for MusaDSL composition projects. Practices can be:
-
-- **Generated from analyses** — extracts recurring patterns from your composition analyses and formalizes them
-- **Added manually** — describe a practice and the LLM structures it with title, description, example, and optional anti-pattern
-- **Listed, edited, removed** — full CRUD for your practice catalog
-
-Two layers:
-- **General practices** ship with the plugin (4, covering generative and rhythmic techniques), indexed in `knowledge.db` and searchable via `search` with `kind: "best_practice"`. There used to be 23: the other nineteen described musa-dsl rather than a way of composing with it, and they moved into musa-dsl's own documentation — the craft of laying out a project into [`docs/guides/project-structure.md`](https://github.com/javier-sy/musa-dsl/blob/master/docs/guides/project-structure.md), the plain facts into the subsystem guides. A practice whose justification cites a property of the framework is documentation of the framework.
-- **User practices** are private, stored in `~/.config/nota/best-practices/`, indexed in `private.db`.
-
-`/nota:code` automatically searches best practices during its research step, so your consolidated patterns are applied when writing new code.
-
-### Other skills
-
-| Skill | Purpose |
-|-------|---------|
-| `/nota:hello` | Welcome and capabilities overview |
-| `/nota:setup` | Plugin configuration and troubleshooting |
-| `/nota:analysis-framework` | View, customize, or reset the analysis dimensions |
-| `/nota:inspiration-framework` | View, customize, or reset the creative dimensions |
-
-## The Creative Cycle
-
-The plugin supports a continuous creative cycle where each step feeds into the next:
-
-```
-/nota:think ──→ /nota:code ──→ /nota:index ──→ /nota:analyze ───╮
-  ↑                 ↑                              │            │
-  │                 │                              ╰──→ /nota:best-practices
-  │                 │                                           │
-  ╰─────────────────╰───────────────────────────────────────────╯
-```
-
-- **`/nota:think`** (ideation) — generates ideas drawing from the inspiration framework, MusaDSL knowledge, and your previous analyses and works. The more you have composed and analyzed, the richer the ideation becomes.
-- **`/nota:code`** (composition) — implements ideas as working MusaDSL code, verified against the knowledge base, best practices, and similar works.
-- **`/nota:index`** (knowledge building) — stores the composition's code, making it searchable and available for future reference by all other skills.
-- **`/nota:analyze`** (reflection) — reads the code, interprets it musically, and stores the analysis as searchable knowledge. Marks reusable patterns as **[consolidation candidate]**.
-- **`/nota:best-practices`** (consolidation) — extracts recurring patterns from analyses into formalized, searchable practices that feed back into `/nota:code`.
-- Back to **`/nota:think`** — the new analysis and practices enrich future ideation: patterns detected across works, unexplored directions, dialogue with composers.
-
-The two databases are the memory of this cycle:
-- **`knowledge.db`** holds MusaDSL knowledge (what is possible)
-- **`private.db`** holds your creative practice (what has been done, and what it means)
-
-The cycle is not mandatory — you can enter at any point and use any skill independently. But each step enriches the others.
-
-## Development (plugin maintainers)
-
-This section is for contributors who want to modify the plugin itself or rebuild the public knowledge base from source.
+How the plugin is built, tested and published.
 
 ### Architecture
 
@@ -242,7 +93,7 @@ make clean     # Remove all generated artifacts
 
 ### CI/CD
 
-The CI workflow (`.github/workflows/build-release.yml`) automates building and releasing the public knowledge base. It is triggered by:
+The CI workflow (`.github/workflows/build-release.yml`) builds the public knowledge base and releases it in [`javier-sy/nota`](https://github.com/javier-sy/nota) — the index serves every harness, so it does not live in this repository. It is triggered by:
 - `repository_dispatch` events from the 7 source repositories (when they update)
 - Manual workflow dispatch
 - Pushes to main that modify the server code
