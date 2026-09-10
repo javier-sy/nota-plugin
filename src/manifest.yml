@@ -11,7 +11,7 @@ author:
 homepage: https://musadsl.yeste.studio
 repository: https://github.com/javier-sy/nota
 github_repo: javier-sy/nota
-license: GPL-3.0-or-later
+license: SEE LICENSE IN LICENSE
 keywords: [musadsl, algorithmic-composition, generative-music, ruby, midi, live-coding]
 
 # Skills (source in src/skills/<name>/SKILL.md, superset format with {{cmd:X}})
@@ -49,9 +49,12 @@ shared_assets:
   - data/best-practices
 
 # Root-level files copied verbatim (not in src/)
+# LICENSE travels with the plugin: a proprietary licence that does not reach the
+# user imposes nothing. The metadata field alone was never a delivery.
 root_assets:
   - Gemfile
   - Gemfile.lock
+  - LICENSE
 
 # Files to exclude when copying mcp_server/ (generated, not source)
 copy_exclude:

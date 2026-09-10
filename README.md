@@ -141,9 +141,13 @@ nota/
 └── .github/workflows/       # CI: build + release public knowledge DB
 ```
 
-## License
+## Licence
 
-GPL-3.0-or-later
+Proprietary — see [LICENSE](LICENSE). Nota is free of charge and is not open source:
+it is licensed to be used, not copied, changed or redistributed. What you compose with
+it is yours, without condition.
+
+MusaDSL itself is free software, LGPL-3.0-or-later, and is unaffected.
 
 ## Author
 
