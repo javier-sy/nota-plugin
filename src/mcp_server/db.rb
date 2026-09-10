@@ -32,12 +32,7 @@ module NotaKnowledgeBase
       Config.knowledge_db_path
     end
 
-    def default_private_db_path
-      env_path = Config.env("PRIVATE_DB_PATH")
-      return env_path if env_path
-
-      File.join(Config.user_dir, "private.db")
-    end
+    def default_private_db_path = Config.private_db_path
 
     def open(path = nil)
       db_path = path || default_db_path

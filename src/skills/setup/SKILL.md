@@ -86,7 +86,7 @@ Tell the user that the plugin is fully configured and ready. Then suggest:
 - `{{cmd:analysis-framework}}` — to view or customize the analytical dimensions
 - `{{cmd:inspiration-framework}}` — to view or customize the creative dimensions
 
-If the `check_setup` results show a private works database is present, mention how many chunks it contains. If not present, briefly mention that the user can optionally index their own compositions with `{{cmd:index}}`.
+The `check_setup` report says whether the user's own index exists, but not how many works it holds: that count lives in `index_status`, on the knowledge base server. If the index is present, say so and offer `{{cmd:index}}` to list or update it. If it is not, briefly mention that the user can optionally index their own compositions with `{{cmd:index}}`.
 
 ## Security
 

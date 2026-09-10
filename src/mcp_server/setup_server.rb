@@ -117,6 +117,17 @@ module NotaKnowledgeBase
       version = File.read("#{path}.version").strip rescue nil
       version ? "present (#{version})" : "present"
     end
+
+    # The user's own index is optional, and its absence is not a fault. It is
+    # reported because the setup skill asks this tool for it: while nothing
+    # here answered, the skill took silence for absence and told every user
+    # their works were not indexed, whether or not they were.
+    def private_index
+      path = Config.private_db_path
+      return :missing unless File.exist?(path)
+
+      "present (#{(File.size(path) / 1_048_576.0).round} MB)"
+    end
   end
 
   # What state the installation is in, and what to do about it.
@@ -145,6 +156,7 @@ module NotaKnowledgeBase
       lines << "- **sqlite-vec extension**: #{loadable_line(s.loadable)}"
       lines << "- **Knowledge index**: #{s.index == :missing ? 'not downloaded yet' : s.index} " \
                "(published at https://github.com/#{Config.github_repo}/releases)"
+      lines << "- **Your own index**: #{private_index_line(s.private_index)}"
       lines << "- **User directory**: `#{Config.user_dir}`"
       lines << ""
       lines << next_step(s)
@@ -169,6 +181,14 @@ module NotaKnowledgeBase
 
       reason = EnsureGems.unsupported_reason
       reason ? "NOT AVAILABLE — #{reason.sub('[Nota] ', '')}" : "MISSING — run install_dependencies"
+    end
+
+    # Measured in megabytes and not in works: counting works needs sqlite3, and
+    # this server runs without it on purpose. `index_status` has the number.
+    def private_index_line(state)
+      return "empty -- #{Config.cmd_ref('index')} adds your own compositions" if state == :missing
+
+      "#{state}"
     end
 
     def loadable_line(state)

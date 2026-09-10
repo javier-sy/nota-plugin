@@ -64,6 +64,17 @@ module NotaKnowledgeBase
       File.join(user_dir, "knowledge.db")
     end
 
+    # The user's own index. Named here, beside the public one, because the setup
+    # server has to be able to say whether it exists while sqlite3 is still
+    # missing -- and db.rb, which owns everything else about it, cannot be
+    # loaded until the gems are there.
+    def private_db_path
+      env_path = env("PRIVATE_DB_PATH")
+      return env_path if env_path
+
+      File.join(user_dir, "private.db")
+    end
+
     def user_dir
       dir = env("NOTA_USER_DIR")
       return dir if dir && !dir.empty?

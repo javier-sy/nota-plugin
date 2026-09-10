@@ -576,6 +576,24 @@ end
 # to catch. The only defence is the instruction in the skill's own text, and an
 # answer written from the model's own knowledge of MusaDSL is indistinguishable
 # from a sourced one. That is the failure this plugin exists to prevent.
+# The setup skill reads check_setup and reports what it finds. When it asks for
+# something the tool does not report, the model does not fail: it concludes the
+# thing is absent. That is how every user was told their own works were not
+# indexed while their private.db sat there. A skill may only ask this tool for
+# what this tool actually says.
+RSpec.describe "what the setup skill asks check_setup for" do
+  it "gets an answer about the user's own index" do
+    tool = File.read(File.expand_path("../src/mcp_server/setup_server.rb", __dir__))
+    expect(tool).to include("Your own index"), "check_setup says nothing about private.db"
+  end
+
+  it "does not ask it for a count it cannot produce" do
+    skill = File.read(File.expand_path("../src/skills/setup/SKILL.md", __dir__))
+    expect(skill).to include("index_status"),
+                     "the setup skill must send the reader elsewhere for the number of works"
+  end
+end
+
 RSpec.describe "skills that need the knowledge base" do
   GATED = %w[analysis-framework analyze best-practices code explain index
              inspiration-framework think].freeze
