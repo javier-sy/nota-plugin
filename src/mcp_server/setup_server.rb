@@ -143,7 +143,8 @@ module NotaKnowledgeBase
       lines << "- **Voyage API key**: #{api_key_line(s.api_key)}"
       lines << "- **Ruby dependencies**: #{gems_line(s.gems)}"
       lines << "- **sqlite-vec extension**: #{loadable_line(s.loadable)}"
-      lines << "- **Knowledge index**: #{s.index == :missing ? 'not downloaded yet' : s.index}"
+      lines << "- **Knowledge index**: #{s.index == :missing ? 'not downloaded yet' : s.index} " \
+               "(published at https://github.com/#{Config.github_repo}/releases)"
       lines << "- **User directory**: `#{Config.user_dir}`"
       lines << ""
       lines << next_step(s)
@@ -295,7 +296,8 @@ module NotaKnowledgeBase
       elsif before || File.exist?(Config.knowledge_db_path)
         "- Knowledge index: already current"
       else
-        "- Knowledge index: NOT downloaded — no release was reachable. It will be fetched " \
+        "- Knowledge index: NOT downloaded — no release was reachable at " \
+        "https://github.com/#{Config.github_repo}/releases. It will be fetched " \
         "with your first question."
       end
     rescue StandardError => e

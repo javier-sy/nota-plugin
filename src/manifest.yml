@@ -3,14 +3,14 @@
 # and emits dist/<harness>/ for each target.
 
 name: nota
-version: "1.1.5"
+version: "1.1.6"
 description: "Nota — MusaDSL composition assistant: learn the framework, code compositions, explore ideas, analyze music"
 author:
   name: Javier Sánchez Yeste
   url: https://yeste.studio
 homepage: https://musadsl.yeste.studio
-repository: https://github.com/javier-sy/nota-plugin
-github_repo: javier-sy/nota-plugin
+repository: https://github.com/javier-sy/nota
+github_repo: javier-sy/nota
 license: GPL-3.0-or-later
 keywords: [musadsl, algorithmic-composition, generative-music, ruby, midi, live-coding]
 

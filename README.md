@@ -19,7 +19,7 @@ Say **"hello musa"** to get a welcome and capabilities overview.
 
 **Proven on macOS only.** Linux and Windows should work — Windows from 1.0.2 on —
 but neither is confirmed. If it breaks on yours,
-[open an issue](https://github.com/javier-sy/nota-plugin/issues).
+[open an issue](https://github.com/javier-sy/nota/issues).
 
 **On Windows, Ruby must be built for x64.** Neither `sqlite3` nor `sqlite-vec`
 publishes anything for Windows on ARM, so a Ruby reporting `aarch64-mingw-ucrt`
@@ -195,7 +195,7 @@ business and nobody else's.
 
 Two separate databases:
 
-- **`knowledge.db`** (public) — Documentation, API reference, demo code, and gem READMEs. Pre-built, automatically downloaded from GitHub Releases on session start. The CI workflow rebuilds it when source repos update.
+- **`knowledge.db`** (public) — Documentation, API reference, demo code, and gem READMEs. Pre-built, automatically downloaded on session start from the releases of [`javier-sy/nota`](https://github.com/javier-sy/nota), which serves every harness. The CI workflow rebuilds it when source repos update.
 
 - **`private.db`** (local, per-user) — User's indexed compositions and musical analyses. Stored at `~/.config/nota/private.db`, outside the plugin directory, persisting across updates. Never touched by CI or auto-updates.
 
@@ -235,7 +235,7 @@ Prerequisites: all MusaDSL source repositories cloned as siblings of `nota/`, an
 ```bash
 make chunks    # Generate chunks only (no API key needed, useful for inspection)
 make build     # Full build: chunks + embeddings + knowledge.db (requires VOYAGE_API_KEY)
-make package   # Package knowledge.db for distribution via GitHub Releases
+make package   # Package knowledge.db for release in javier-sy/nota
 make status    # Check index status
 make clean     # Remove all generated artifacts
 ```

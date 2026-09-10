@@ -2,7 +2,7 @@
 
 ## Project overview
 
-Nota is a **harness-agnostic** algorithmic composition assistant for the [MusaDSL](https://musadsl.yeste.studio) framework. Repo: [`javier-sy/nota-plugin`](https://github.com/javier-sy/nota-plugin) (renamed from `nota-plugin-for-claude`; the old URL redirects, so existing references keep working). The source lives in `src/` and a generator (`scripts/generate.rb`) emits per-harness plugin output (`dist/claude-code/`, `dist/opencode/`) from a neutral `src/manifest.yml` + per-target templates in `targets/`.
+Nota is a **harness-agnostic** algorithmic composition assistant for the [MusaDSL](https://musadsl.yeste.studio) framework. Source repo: [`javier-sy/nota-plugin`](https://github.com/javier-sy/nota-plugin) (renamed from `nota-plugin-for-claude`; the old URL redirects, so existing references keep working). Its **public face is [`javier-sy/nota`](https://github.com/javier-sy/nota)**: the knowledge base is released there and the issue tracker lives there, because the index is the same for every harness and this repository is the source of one plugin. The source lives in `src/` and a generator (`scripts/generate.rb`) emits per-harness plugin output (`dist/claude-code/`, `dist/opencode/`) from a neutral `src/manifest.yml` + per-target templates in `targets/`.
 
 Each harness has its **own distribution registry**, and neither lives in this repo: Claude Code consumes [`javier-sy/claude-plugins`](https://github.com/javier-sy/claude-plugins) (the yeste.studio marketplace catalog plus a `nota/` directory, both written by this repo's CI); opencode consumes npm. This repo holds only source.
 
@@ -43,7 +43,7 @@ nota-plugin/                      # source repo (harness-agnostic)
 │   └── templates/
 │       └── opencode-index.ts     #   TS plugin wrapper template for opencode
 ├── .github/workflows/
-│   ├── build-release.yml         # CI: build + release knowledge.db.gz
+│   ├── build-release.yml         # CI: build knowledge.db.gz → release in javier-sy/nota
 │   └── generate-dist.yml         # CI: generate dist/ → publish to claude-plugins (+ npm)
 ├── Gemfile  Gemfile.lock         # Ruby deps: mcp, sqlite3, sqlite-vec (+ generator deps)
 ├── Makefile  .version  VERSION   # Build + version tooling
@@ -166,7 +166,7 @@ two-server split. Installing from a tool call rather than a handshake moves the
 work from a 30 s window to one measured in hours -- and the server that offers
 that tool now needs nothing itself, so there is no smaller install left to race.
 
-**What is actually exercised, per platform.** macOS arm64: everything, daily. Linux x86_64: `build-release.yml` runs on `ubuntu-latest` and does chunks → embed → contract check → retrieval battery, so the database layer and vector search do run there — but nobody has used the plugin on Linux as a composer, and **the CI never runs `spec/` on any platform**. Windows: no complete session on record; 1.0.2 is the first version that can start. Say this plainly wherever it is claimed, and do not upgrade "should work" to "supported" without a session that proves it.
+**What is actually exercised, per platform.** macOS arm64: everything, daily. Linux x86_64: `build-release.yml` runs on `ubuntu-latest` and does chunks → embed → contract check → retrieval battery, so the database layer and vector search do run there — but nobody has used the plugin on Linux as a composer, and **the CI never runs `spec/` on any platform**. Windows x64: **exercised end to end, repeatedly.** Seven clean installs across 2026-09-07/08 — wiped plugin cache, marketplaces and `~/.config/nota` each time — with 1.1.3 measured through the whole path: both servers connect, the skills refuse while the knowledge base is empty, `install_dependencies` takes ~95 s for gems + sqlite-vec + index, and a restart 2.8 minutes later connects with all 22 tools. Windows on ARM remains out of reach (see above). Linux is still the untested one. Say this plainly wherever it is claimed, and do not upgrade "should work" to "supported" without a session that proves it.
 
 **Nothing sits on the critical path any more, and the way there is worth
 recording.** The note that stood here said a stdlib-only responder was the way
@@ -397,7 +397,7 @@ make clean          # Remove knowledge.db, chunks, dist/, and generated artifact
 - **knowledge.db is gitignored** — never commit it; it's distributed via GitHub Releases
 - **dist/ is gitignored** — never commit it; CI generates and publishes it
 - **Skills use `{{cmd:X}}` placeholders** — never hardcode `/nota:X` in skill source; the generator resolves per target
-- **Every push to main touching `src/targets/scripts/Gemfile` requires a version bump** — `generate-dist.yml` fails fast if the `src/manifest.yml` version already exists on npm (prevents Claude Code/opencode divergence). Run `./version.sh nota-plugin <new-version>` from `MusaDSL/` before pushing.
+- **Every push to main that touches `src/`, `targets/`, `scripts/`, `Gemfile` or `Gemfile.lock` requires a version bump.** See *Fail-fast version check* under CI/CD for why, and use the command from *When releasing a new version* — there is only one form: `./version.sh new patch nota-plugin`.
 - **User private data at `~/.config/nota/`** (`private.db`, `best-practices/`, `private-best-practices.md`) — never read or modify without an explicit user request.
 
 ## References

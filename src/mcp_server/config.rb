@@ -11,6 +11,8 @@
 #                      Non-empty (e.g. "/nota:") → "#{prefix}#{skill}" (Claude Code slash).
 #                      Empty → "the #{skill} skill" (opencode, model-invoked, no slash).
 #   NOTA_GITHUB_REPO — the GitHub repo (owner/name) hosting knowledge.db releases.
+#                      Defaults to javier-sy/nota, which is harness-agnostic on
+#                      purpose: the index is the same for every harness.
 #
 # Defaults assume the Claude Code target (the incumbent), so the server keeps
 # working unchanged for existing installs when env vars are not set.
@@ -87,7 +89,7 @@ module NotaKnowledgeBase
       repo = env("NOTA_GITHUB_REPO")
       return repo if repo && !repo.empty?
 
-      "javier-sy/nota-plugin"
+      "javier-sy/nota"
     end
   end
 end

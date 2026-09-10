@@ -129,9 +129,15 @@ jobs:
         id: date
         run: echo "date=$(date -u +%Y%m%d%H%M%S)" >> "$GITHUB_OUTPUT"
 
+      # The index is published in javier-sy/nota, not here: it is the same index
+      # for every harness, and this repository is the source of one plugin. That
+      # repo is also where the plugin's public face lives -- issues included --
+      # so nothing user-facing depends on this one being readable.
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
+          repository: javier-sy/nota
+          token: ${{ secrets.KB_REPO_TOKEN }}
           tag_name: "db-${{ steps.date.outputs.date }}"
           name: "Knowledge DB ${{ steps.date.outputs.date }}"
           body: |
